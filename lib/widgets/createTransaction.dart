@@ -1,14 +1,36 @@
 import 'package:flutter/material.dart';
 
-import './homePage.dart';
+//import './homePage.dart';
 
-class NewTransaction extends StatelessWidget {
-
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
+class NewTransaction extends StatefulWidget {
   final Function addNewTx;
 
   NewTransaction(this.addNewTx);
+
+  @override
+  _NewTransactionState createState() => _NewTransactionState();
+}
+
+class _NewTransactionState extends State<NewTransaction> {
+  final titleController = TextEditingController();
+
+  final amountController = TextEditingController();
+
+  void submitData() {
+    final enteredTitle = titleController.text;
+    final enteredAmount = num.parse(amountController.text);
+
+    if (enteredTitle.isEmpty || enteredAmount <= 0) {
+      return;
+    } else {
+      widget.addNewTx(
+        enteredTitle,
+        enteredAmount,
+      );
+    }
+
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,26 +41,31 @@ class NewTransaction extends StatelessWidget {
         child: Column(
           children: <Widget>[
             TextField(
-              decoration: InputDecoration(labelText: 'Title', border: OutlineInputBorder(borderRadius: BorderRadius.circular(30))),
+              decoration: InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30))),
               controller: titleController,
+              onSubmitted: (_) => submitData(),
             ),
-            SizedBox(height: 15,),
+            SizedBox(
+              height: 15,
+            ),
             TextField(
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: 'Amount', border: OutlineInputBorder(borderRadius: BorderRadius.circular(30))),
+              decoration: InputDecoration(
+                  labelText: 'Amount',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30))),
               controller: amountController,
+              onSubmitted: (_) => submitData(),
             ),
             FlatButton(
               child: Text(
                 'Add Transaction',
-                style: TextStyle(color: Colors.deepPurple),
+                style: TextStyle(color:Theme.of(context).primaryColor),
               ),
-              onPressed: () {
-                addNewTx(
-                  titleController.text,
-                  num.parse(amountController.text)
-                );
-              },
+              onPressed: submitData,
             )
           ],
         ),
