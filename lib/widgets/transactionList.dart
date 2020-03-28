@@ -18,7 +18,9 @@ class TransactionList extends StatelessWidget {
                   Text(
                     'No Transactions Added Yet!',
                   ),
-                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Container(
                       height: 300,
                       child: Image.asset(
@@ -30,44 +32,33 @@ class TransactionList extends StatelessWidget {
             : ListView.builder(
                 itemBuilder: (ctx, index) {
                   return Card(
-                    elevation: 6,
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 15),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Theme.of(context).primaryColor,
-                                width: 1,
-                                style: BorderStyle.solid),
-                          ),
-                          padding: EdgeInsets.all(10),
-                          child: Text(
+                    elevation: 5,
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 5,
+                      vertical: 8,
+                    ),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        radius: 30,
+                        child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: FittedBox(
+                              child: Text(
                             '\u20B9${userTransactions[index].amount.toStringAsFixed(0)}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
+                          )),
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              userTransactions[index].title,
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              formatDate(userTransactions[index].date,
-                                  [d, '-', M, '-', yyyy]),
-                              style: TextStyle(color: Colors.black54),
-                            ),
-                          ],
-                        )
-                      ],
+                      ),
+                      title: Text(
+                        userTransactions[index].title,
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        formatDate(userTransactions[index].date,
+                            [d, '-', M, '-', yyyy]),
+                        style: TextStyle(color: Colors.black54),
+                      ),
+                      trailing: null,
                     ),
                   );
                 },

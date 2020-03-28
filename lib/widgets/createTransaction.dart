@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 //import './homePage.dart';
 
 class NewTransaction extends StatefulWidget {
@@ -12,15 +12,20 @@ class NewTransaction extends StatefulWidget {
 }
 
 class _NewTransactionState extends State<NewTransaction> {
-  final titleController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _amountController = TextEditingController();
+  DateTime _selectDate;
 
-  final amountController = TextEditingController();
+  void _submitData() {
+    if(_amountController.text.isEmpty){
+      return;
+    }
+    
+    final enteredTitle = _titleController.text;
+    final enteredAmount = num.parse(_amountController.text);
 
-  void submitData() {
-    final enteredTitle = titleController.text;
-    final enteredAmount = num.parse(amountController.text);
 
-    if (enteredTitle.isEmpty || enteredAmount <= 0) {
+    if (enteredTitle.isEmpty || enteredAmount <= 0 || _selectDate == null) {
       return;
     } else {
       widget.addNewTx(
@@ -30,6 +35,22 @@ class _NewTransactionState extends State<NewTransaction> {
     }
 
     Navigator.of(context).pop();
+  }
+
+  void _presentDatePicker() {
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2019),
+            lastDate: DateTime.now())
+        .then((pickedDate) {
+      if (pickedDate == null) {
+        return;
+      }
+      setState(() {
+        _selectDate = pickedDate;
+      });
+    });
   }
 
   @override
@@ -45,8 +66,8 @@ class _NewTransactionState extends State<NewTransaction> {
                   labelText: 'Title',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30))),
-              controller: titleController,
-              onSubmitted: (_) => submitData(),
+              controller: _titleController,
+              onSubmitted: (_) => _submitData(),
             ),
             SizedBox(
               height: 15,
@@ -57,15 +78,41 @@ class _NewTransactionState extends State<NewTransaction> {
                   labelText: 'Amount',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30))),
-              controller: amountController,
-              onSubmitted: (_) => submitData(),
+              controller: _amountController,
+              onSubmitted: (_) => _submitData(),
             ),
-            FlatButton(
+            Container(
+              height: 70,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        _selectDate == null
+                            ? 'No Date Chosen!'
+                            : 'Date : ${DateFormat.yMd().format(_selectDate)}',
+                      ),
+                    ),
+                    FlatButton(
+                      textColor: Theme.of(context).primaryColor,
+                      child: Text(
+                        'Choose Date',
+                        //  style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      onPressed: _presentDatePicker,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            RaisedButton(
+              color: Theme.of(context).primaryColor,
               child: Text(
                 'Add Transaction',
-                style: TextStyle(color:Theme.of(context).primaryColor),
+                // style: TextStyle(color: Theme.of(context).primaryColorDark),
               ),
-              onPressed: submitData,
+              onPressed: _submitData,
             )
           ],
         ),
